@@ -1,0 +1,16 @@
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum ScanError {
+    #[error("Failed to scan network ports: {0}")]
+    NetstatError(String),
+
+    #[error("Docker error: {0}")]
+    DockerError(String),
+
+    #[error("Process error: {0}")]
+    ProcessError(String),
+
+    #[error("IO error: {0}")]
+    IoError(#[from] std::io::Error),
+}
