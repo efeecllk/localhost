@@ -13,6 +13,8 @@ function App() {
   const view = useProcessStore((s) => s.view);
   const theme = useProcessStore((s) => s.settings.theme);
   const loadSettings = useProcessStore((s) => s.loadSettings);
+  const deselectProcess = useProcessStore((s) => s.deselectProcess);
+  const setView = useProcessStore((s) => s.setView);
 
   // Start polling
   useProcessPoller();
@@ -38,6 +40,21 @@ function App() {
     applyTheme(theme === "dark");
   }, [theme, applyTheme]);
 
+  // Keyboard: Escape to go back from detail/settings
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (view === "detail") {
+          deselectProcess();
+        } else if (view === "settings") {
+          setView("main");
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [view, deselectProcess, setView]);
+
   const renderView = () => {
     switch (view) {
       case "settings":
@@ -58,7 +75,7 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100">
+    <div className="h-screen w-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 animate-fade-in">
       {renderView()}
     </div>
   );

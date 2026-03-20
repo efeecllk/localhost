@@ -45,7 +45,7 @@ const Settings = memo(function Settings() {
   ];
 
   return (
-    <div className="flex flex-col h-full max-h-[500px] w-[360px] bg-neutral-50 dark:bg-neutral-950 overflow-hidden">
+    <div className="flex flex-col h-full max-h-[500px] w-[360px] bg-neutral-50 dark:bg-neutral-950 overflow-hidden animate-slide-down">
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
         <button

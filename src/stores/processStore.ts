@@ -92,12 +92,19 @@ export const useProcessStore = create<ProcessState>()(
             // Process gone -- close detail panel
           }
 
+          // If the selected process disappeared, also reset the view to main
+          const viewReset =
+            prevSelected && !updatedSelected && get().view === "detail"
+              ? "main"
+              : get().view;
+
           set({
             projects,
             lastUpdated: Date.now(),
             isScanning: false,
             error: null,
             selectedProcess: updatedSelected,
+            view: viewReset,
           });
         } catch (err) {
           set({
