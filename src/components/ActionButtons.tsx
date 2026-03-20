@@ -30,24 +30,21 @@ const ActionButtons = memo(function ActionButtons({
 
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  const handleCopy = useCallback(
-    (value: string, field: string) => {
-      navigator.clipboard.writeText(value);
-      setCopiedField(field);
-      setTimeout(() => setCopiedField(null), 2000);
-    },
-    []
-  );
+  const handleCopy = useCallback((value: string, field: string) => {
+    navigator.clipboard.writeText(value);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  }, []);
 
   const isDocker = process.source === "docker";
 
   // Derive editor label from command
   const editorLabel: Record<string, string> = {
-    code: "VS Code",
+    code:   "VS Code",
     cursor: "Cursor",
-    zed: "Zed",
-    subl: "Sublime",
-    idea: "IntelliJ",
+    zed:    "Zed",
+    subl:   "Sublime",
+    idea:   "IntelliJ",
   };
 
   const actions = [
@@ -98,7 +95,7 @@ const ActionButtons = memo(function ActionButtons({
             label: copiedField === "port" ? "Copied" : "Copy Port",
             icon:
               copiedField === "port" ? (
-                <CheckIcon size={14} className="text-emerald-500" />
+                <CheckIcon size={14} className="text-[#7C9A82] animate-copy-confirm" />
               ) : (
                 <ClipboardIcon size={14} />
               ),
@@ -112,7 +109,7 @@ const ActionButtons = memo(function ActionButtons({
       label: copiedField === "path" ? "Copied" : "Copy Path",
       icon:
         copiedField === "path" ? (
-          <CheckIcon size={14} className="text-emerald-500" />
+          <CheckIcon size={14} className="text-[#7C9A82] animate-copy-confirm" />
         ) : (
           <ClipboardIcon size={14} />
         ),
@@ -122,17 +119,21 @@ const ActionButtons = memo(function ActionButtons({
   ];
 
   return (
-    <div className="border-t border-neutral-200 dark:border-neutral-800 p-3">
-      <div className="grid grid-cols-3 gap-2">
+    <div className="border-t border-surface-200 dark:border-surface-700 p-3">
+      <div className="grid grid-cols-3 gap-1.5">
         {actions.map((action) => (
           <button
             key={action.label}
             onClick={action.onClick}
-            className={`flex flex-col items-center gap-1 p-2 rounded-lg text-[11px] font-medium transition-colors ${
+            className={[
+              "flex flex-col items-center gap-1 p-2 rounded-lg",
+              "text-[11px] font-medium",
+              "transition-colors duration-100",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50",
               action.variant === "danger"
-                ? "hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 dark:text-red-400"
-                : "hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400"
-            }`}
+                ? "hover:bg-red-50 dark:hover:bg-red-900/20 text-[#B87A7A] dark:text-[#D4A0A0]"
+                : "hover:bg-surface-100 dark:hover:bg-surface-800 text-surface-600 dark:text-surface-400",
+            ].join(" ")}
           >
             {action.icon}
             <span className="truncate w-full text-center">

@@ -14,56 +14,61 @@ const DetailPanel = memo(function DetailPanel() {
   if (!process) return null;
 
   const statusLabel: Record<string, string> = {
-    healthy: "Healthy",
-    high_cpu: "High CPU",
+    healthy:     "Healthy",
+    high_cpu:    "High CPU",
     high_memory: "High Memory",
-    crashed: "Crashed",
+    crashed:     "Crashed",
   };
 
-  const statusColor: Record<string, string> = {
-    healthy: "text-emerald-500",
-    high_cpu: "text-amber-500",
-    high_memory: "text-amber-500",
-    crashed: "text-red-500",
+  // Text color for the status chip label — matches status-* palette
+  const statusTextColor: Record<string, string> = {
+    healthy:     "text-[#5A7A60]  dark:text-[#A8C4AC]",
+    high_cpu:    "text-[#9A7A30]  dark:text-[#DDB84A]",
+    high_memory: "text-[#9A7A30]  dark:text-[#DDB84A]",
+    crashed:     "text-[#8A4A4A]  dark:text-[#D4A0A0]",
   };
 
+  // Background + ring for the status chip
   const statusBgColor: Record<string, string> = {
-    healthy: "bg-emerald-50 dark:bg-emerald-900/20 ring-1 ring-emerald-200 dark:ring-emerald-800/50",
-    high_cpu: "bg-amber-50 dark:bg-amber-900/20 ring-1 ring-amber-200 dark:ring-amber-800/50",
-    high_memory: "bg-amber-50 dark:bg-amber-900/20 ring-1 ring-amber-200 dark:ring-amber-800/50",
-    crashed: "bg-red-50 dark:bg-red-900/20 ring-1 ring-red-200 dark:ring-red-800/50",
+    healthy:
+      "bg-emerald-50 dark:bg-emerald-900/20 ring-1 ring-emerald-200 dark:ring-emerald-800/50",
+    high_cpu:
+      "bg-amber-50 dark:bg-amber-900/20 ring-1 ring-amber-200 dark:ring-amber-800/50",
+    high_memory:
+      "bg-amber-50 dark:bg-amber-900/20 ring-1 ring-amber-200 dark:ring-amber-800/50",
+    crashed:
+      "bg-red-50 dark:bg-red-900/20 ring-1 ring-red-200 dark:ring-red-800/50",
   };
 
   return (
     <div className="flex flex-col h-full animate-detail-expand">
       {/* Back button header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-surface-200 dark:border-surface-700">
         <button
           onClick={deselectProcess}
-          className="p-1 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="p-1 rounded-md hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50"
           aria-label="Back to process list"
         >
           <ChevronLeftIcon
             size={16}
-            className="text-neutral-500 dark:text-neutral-400"
+            className="text-surface-500 dark:text-surface-400"
           />
         </button>
-        <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+        <span className="text-[13px] font-semibold text-surface-700 dark:text-surface-200">
           {process.name}
         </span>
         {process.port && (
-          <span className="text-sm font-mono text-blue-500 dark:text-blue-400">
+          <span className="text-[12px] font-mono tabular-nums text-surface-500 dark:text-surface-400">
             :{process.port}
           </span>
         )}
         {/* Status chip */}
         <span
-          className={`
-            ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full
-            ${statusColor[process.status]} ${statusBgColor[process.status]}
-          `}
+          className={`ml-auto text-[10px] font-medium px-2 py-0.5 rounded-full ${
+            statusTextColor[process.status] ?? "text-surface-500"
+          } ${statusBgColor[process.status] ?? ""}`}
         >
-          {statusLabel[process.status]}
+          {statusLabel[process.status] ?? process.status}
         </span>
       </div>
 
@@ -97,7 +102,7 @@ const DetailPanel = memo(function DetailPanel() {
 
         {/* Docker-specific info */}
         {process.dockerInfo && (
-          <div className="space-y-2 pt-2 border-t border-neutral-200 dark:border-neutral-800">
+          <div className="space-y-2 pt-2 border-t border-surface-200 dark:border-surface-700">
             <InfoRow
               label="Container"
               value={process.dockerInfo.containerName}
@@ -137,15 +142,15 @@ function StatCard({
   highlight?: boolean;
 }) {
   return (
-    <div className="bg-neutral-50 dark:bg-neutral-800 rounded-lg p-3">
-      <div className="text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500 mb-1">
+    <div className="bg-surface-100 dark:bg-surface-800 rounded-lg p-3">
+      <div className="text-[10px] uppercase tracking-wider font-semibold text-surface-400 dark:text-surface-500 mb-1">
         {label}
       </div>
       <div
-        className={`text-sm font-medium ${mono ? "font-mono" : ""} ${
+        className={`text-[12px] font-medium tabular-nums ${mono ? "font-mono" : ""} ${
           highlight
-            ? "text-amber-500 dark:text-amber-400"
-            : "text-neutral-700 dark:text-neutral-200"
+            ? "text-[#C9A962] dark:text-[#DDB84A]"
+            : "text-surface-700 dark:text-surface-200"
         } ${className}`}
       >
         {value}
@@ -166,13 +171,13 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <span className="text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500 flex-shrink-0 pt-0.5">
+      <span className="text-[10px] uppercase tracking-wider font-semibold text-surface-400 dark:text-surface-500 flex-shrink-0 pt-0.5">
         {label}
       </span>
       <span
-        className={`text-xs text-right break-all ${
+        className={`text-[12px] text-right break-all ${
           mono ? "font-mono" : ""
-        } text-neutral-700 dark:text-neutral-300`}
+        } text-surface-700 dark:text-surface-300`}
         title={value}
       >
         {value}

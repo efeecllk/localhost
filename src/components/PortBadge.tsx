@@ -50,8 +50,8 @@ const portTypeStyles: Record<PortType, { light: string; dark: string }> = {
     dark: "dark:bg-violet-950/40 dark:text-violet-300 dark:ring-violet-800/50",
   },
   other: {
-    light: "bg-neutral-100 text-neutral-500 ring-1 ring-neutral-200",
-    dark: "dark:bg-neutral-800 dark:text-neutral-400 dark:ring-neutral-700",
+    light: "bg-surface-100 text-surface-500 ring-1 ring-surface-200",
+    dark: "dark:bg-surface-800 dark:text-surface-400 dark:ring-surface-700",
   },
 };
 

@@ -49,6 +49,9 @@ export default {
         'sm':  ['12px', { lineHeight: '18px' }],
         'base':['13px', { lineHeight: '20px' }],
       },
+      transitionDuration: {
+        '100': '100ms',
+      },
       width: {
         'popup': '360px',
       },
@@ -56,11 +59,14 @@ export default {
         'popup': '500px',
       },
       animation: {
-        'spin-slow': 'spin 2s linear infinite',
-        'pulse-subtle': 'pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'fade-in': 'fade-in 0.15s ease-out',
-        'slide-down': 'slide-down 0.15s ease-out',
-        'detail-expand': 'detail-expand 0.2s ease-out',
+        'spin-slow':       'spin 2s linear infinite',
+        'pulse-subtle':    'pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'fade-in':         'fade-in 0.15s ease-out',
+        'slide-down':      'slide-down 0.15s ease-out',
+        'detail-expand':   'detail-expand 0.2s ease-out',
+        'process-enter':   'process-enter 0.15s ease-out',
+        'process-exit':    'process-exit 0.1s ease-in',
+        'copy-confirm':    'copy-confirm 0.2s ease-out',
       },
       keyframes: {
         'pulse-subtle': {
@@ -79,11 +85,25 @@ export default {
           from: { opacity: '0', transform: 'translateY(-8px)' },
           to:   { opacity: '1', transform: 'translateY(0)' },
         },
+        'process-enter': {
+          from: { opacity: '0', transform: 'translateY(-2px)' },
+          to:   { opacity: '1', transform: 'translateY(0)' },
+        },
+        'process-exit': {
+          from: { opacity: '1' },
+          to:   { opacity: '0' },
+        },
+        'copy-confirm': {
+          '0%':   { transform: 'scale(1)' },
+          '50%':  { transform: 'scale(1.15)' },
+          '100%': { transform: 'scale(1)' },
+        },
       },
       boxShadow: {
         'popup':   '0 8px 24px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.10)',
         'soft-sm': '0 1px 2px rgba(28, 25, 23, 0.04)',
         'soft-md': '0 4px 6px -1px rgba(28, 25, 23, 0.06), 0 2px 4px -1px rgba(28, 25, 23, 0.04)',
+        'soft-lg': '0 10px 15px -3px rgba(28, 25, 23, 0.06), 0 4px 6px -2px rgba(28, 25, 23, 0.03)',
       },
     },
   },

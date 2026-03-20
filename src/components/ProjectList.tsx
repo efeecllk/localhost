@@ -11,7 +11,10 @@ interface ProjectListProps {
 
 const ProjectList = memo(function ProjectList({ projects }: ProjectListProps) {
   return (
-    <div role="list" aria-label="Running processes" className="py-1 process-list">
+    <div
+      aria-label="Running processes grouped by project"
+      className="py-1"
+    >
       {projects.map((group) => (
         <ProjectGroupComponent key={group.name} group={group} />
       ))}

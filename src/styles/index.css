@@ -23,7 +23,7 @@ body {
   -webkit-user-select: none;
 }
 
-/* Custom scrollbar -- thin macOS-style */
+/* Custom scrollbar -- 4px thin macOS-style */
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -31,11 +31,13 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d6d3d1;
+  /* surface-300 in light mode */
+  background: #D6D3D1;
   border-radius: 2px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #44403c;
+  /* surface-700 in dark mode */
+  background: #44403C;
 }
 
 /* Hide scrollbar for horizontal action button strip */
@@ -74,14 +76,16 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Reduced motion support */
+/* Reduced motion support — disable all custom animations */
 @media (prefers-reduced-motion: reduce) {
   .animate-spin-slow,
   .animate-detail-expand,
-  .animate-detail-collapse,
+  .animate-slide-down,
+  .animate-fade-in,
   .animate-process-enter,
   .animate-process-exit,
-  .animate-copy-confirm {
+  .animate-copy-confirm,
+  .animate-pulse-subtle {
     animation: none !important;
     transition: none !important;
   }

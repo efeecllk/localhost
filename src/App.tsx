@@ -75,7 +75,7 @@ function App() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-neutral-50 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-100 animate-fade-in">
+    <div className="h-screen w-screen overflow-hidden bg-surface-50 dark:bg-surface-950 text-surface-800 dark:text-surface-100 animate-fade-in">
       {renderView()}
     </div>
   );
@@ -84,7 +84,7 @@ function App() {
 function LoadingSpinner() {
   return (
     <div className="flex items-center justify-center h-full w-[360px]">
-      <div className="animate-spin rounded-full h-5 w-5 border-2 border-neutral-300 border-t-neutral-600 dark:border-neutral-600 dark:border-t-neutral-300" />
+      <div className="animate-spin rounded-full h-5 w-5 border-2 border-surface-300 border-t-surface-600 dark:border-surface-600 dark:border-t-surface-300" />
     </div>
   );
 }

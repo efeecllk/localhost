@@ -24,22 +24,22 @@ const MenuDropdown = memo(function MenuDropdown() {
   }, [clearError, fetchProcesses]);
 
   return (
-    <div className="flex flex-col h-full max-h-[500px] w-[360px] bg-neutral-50 dark:bg-neutral-950 overflow-hidden">
+    <div className="flex flex-col h-full max-h-[500px] w-[360px] bg-surface-50 dark:bg-surface-950 overflow-hidden">
       <Header />
 
       {/* Error banner with dismiss and retry */}
       {error && (
-        <div className="mx-3 mt-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-xs text-red-600 dark:text-red-400 flex items-start gap-2 animate-slide-down">
+        <div className="mx-3 mt-2 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-[11px] text-red-600 dark:text-red-400 flex items-start gap-2 animate-slide-down">
           <span className="flex-1 break-words">{error}</span>
           <button
             onClick={handleRetry}
-            className="flex-shrink-0 text-red-500 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors"
+            className="flex-shrink-0 text-red-500 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50 rounded"
           >
             Retry
           </button>
           <button
             onClick={clearError}
-            className="flex-shrink-0 text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors"
+            className="flex-shrink-0 text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50 rounded"
             aria-label="Dismiss error"
           >
             &times;
@@ -48,7 +48,7 @@ const MenuDropdown = memo(function MenuDropdown() {
       )}
 
       {/* Scrollable process list */}
-      <div className="flex-1 overflow-y-auto min-h-0">
+      <div className="flex-1 overflow-y-auto min-h-0 process-list">
         {totalProcesses === 0 ? (
           <EmptyState />
         ) : (

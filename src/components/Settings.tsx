@@ -24,41 +24,49 @@ const Settings = memo(function Settings() {
   };
 
   const intervalOptions = [
-    { value: 2000, label: "2s" },
-    { value: 5000, label: "5s" },
+    { value: 2000,  label: "2s" },
+    { value: 5000,  label: "5s" },
     { value: 10000, label: "10s" },
     { value: 30000, label: "30s" },
   ];
 
   const editorOptions = [
-    { value: "code", label: "VS Code" },
+    { value: "code",   label: "VS Code" },
     { value: "cursor", label: "Cursor" },
-    { value: "zed", label: "Zed" },
-    { value: "subl", label: "Sublime" },
-    { value: "idea", label: "IntelliJ" },
+    { value: "zed",    label: "Zed" },
+    { value: "subl",   label: "Sublime" },
+    { value: "idea",   label: "IntelliJ" },
   ];
 
   const themeOptions: Array<{ value: SettingsType["theme"]; label: string }> = [
     { value: "system", label: "System" },
-    { value: "light", label: "Light" },
-    { value: "dark", label: "Dark" },
+    { value: "light",  label: "Light" },
+    { value: "dark",   label: "Dark" },
   ];
 
+  // Shared classes for toggle-style option buttons
+  const optionActive =
+    "bg-surface-900 dark:bg-surface-100 text-white dark:text-surface-900 border-surface-900 dark:border-surface-100";
+  const optionInactive =
+    "bg-surface-50 dark:bg-surface-800 border-surface-200 dark:border-surface-700 text-surface-500 dark:text-surface-400 hover:bg-surface-100 dark:hover:bg-surface-700";
+  const optionBase =
+    "px-3 py-2 text-[12px] rounded-lg border transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50";
+
   return (
-    <div className="flex flex-col h-full max-h-[500px] w-[360px] bg-neutral-50 dark:bg-neutral-950 overflow-hidden animate-slide-down">
+    <div className="flex flex-col h-full max-h-[500px] w-[360px] bg-surface-50 dark:bg-surface-950 overflow-hidden animate-slide-down">
       {/* Header */}
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-surface-200 dark:border-surface-700">
         <button
           onClick={() => setView("main")}
-          className="p-1 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="p-1 rounded-md hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50"
           aria-label="Back to main view"
         >
           <ChevronLeftIcon
             size={16}
-            className="text-neutral-500 dark:text-neutral-400"
+            className="text-surface-500 dark:text-surface-400"
           />
         </button>
-        <span className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
+        <span className="text-[13px] font-semibold text-surface-700 dark:text-surface-200">
           Settings
         </span>
       </div>
@@ -78,7 +86,7 @@ const Settings = memo(function Settings() {
             }
             onBlur={handleSave}
             placeholder="~/Desktop/Projects"
-            className="w-full px-3 py-2.5 text-sm font-mono bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg text-neutral-800 dark:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-neutral-400/50 transition-shadow"
+            className="w-full px-3 py-2.5 text-[12px] font-mono bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-800 dark:text-surface-200 placeholder:text-surface-300 dark:placeholder:text-surface-600 focus:outline-none focus:ring-2 focus:ring-surface-400/50 transition-shadow"
           />
         </SettingsField>
 
@@ -96,10 +104,8 @@ const Settings = memo(function Settings() {
                   setLocal(val);
                   updateSettings(val);
                 }}
-                className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
-                  local.scanInterval === opt.value
-                    ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100"
-                    : "bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                className={`flex-1 ${optionBase} ${
+                  local.scanInterval === opt.value ? optionActive : optionInactive
                 }`}
               >
                 {opt.label}
@@ -122,10 +128,8 @@ const Settings = memo(function Settings() {
                   setLocal(val);
                   updateSettings(val);
                 }}
-                className={`px-3 py-2 text-sm rounded-lg border transition-colors ${
-                  local.editorCommand === opt.value
-                    ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100"
-                    : "bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                className={`${optionBase} ${
+                  local.editorCommand === opt.value ? optionActive : optionInactive
                 }`}
               >
                 {opt.label}
@@ -145,10 +149,8 @@ const Settings = memo(function Settings() {
                   setLocal(val);
                   updateSettings(val);
                 }}
-                className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
-                  local.theme === opt.value
-                    ? "bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 border-neutral-900 dark:border-neutral-100"
-                    : "bg-neutral-50 dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                className={`flex-1 ${optionBase} ${
+                  local.theme === opt.value ? optionActive : optionInactive
                 }`}
               >
                 {opt.label}
@@ -159,10 +161,10 @@ const Settings = memo(function Settings() {
       </div>
 
       {/* Save button pinned to bottom */}
-      <div className="px-4 py-3 border-t border-neutral-200 dark:border-neutral-800">
+      <div className="px-4 py-3 border-t border-surface-200 dark:border-surface-700">
         <button
           onClick={handleSave}
-          className="w-full py-2.5 text-sm font-medium rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors"
+          className="w-full py-2.5 text-[12px] font-medium rounded-lg bg-surface-900 dark:bg-surface-100 text-white dark:text-surface-900 hover:bg-surface-800 dark:hover:bg-surface-200 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50"
         >
           Save Settings
         </button>
@@ -183,10 +185,10 @@ function SettingsField({
 }) {
   return (
     <div>
-      <label className="block text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
+      <label className="block text-[11px] font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider mb-1">
         {label}
       </label>
-      <p className="text-xs text-neutral-400 dark:text-neutral-500 mb-2">
+      <p className="text-[11px] text-surface-400 dark:text-surface-500 mb-2">
         {description}
       </p>
       {children}

@@ -15,7 +15,7 @@ const Footer = memo(function Footer() {
   const setView = useProcessStore((s) => s.setView);
 
   return (
-    <div className="flex items-center justify-between px-4 py-2.5 border-t border-neutral-200 dark:border-neutral-800 text-[11px] text-neutral-400 dark:text-neutral-500">
+    <div className="flex items-center justify-between px-4 py-2.5 border-t border-surface-200 dark:border-surface-700 text-[11px] text-surface-400 dark:text-surface-500">
       <span className="tabular-nums">
         {totalProcesses} {totalProcesses === 1 ? "process" : "processes"}
         {" \u00B7 "}
@@ -29,7 +29,7 @@ const Footer = memo(function Footer() {
         )}
         <button
           onClick={() => setView("settings")}
-          className="text-neutral-400 dark:text-neutral-500 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors"
+          className="text-surface-400 dark:text-surface-500 hover:text-surface-600 dark:hover:text-surface-300 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50 rounded"
         >
           Settings
         </button>

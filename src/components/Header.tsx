@@ -17,13 +17,13 @@ const Header = memo(function Header() {
     : "Refresh";
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+    <div className="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700">
       {/* Left: identity */}
       <div className="flex items-center gap-1.5">
-        <span className="text-sm font-mono text-neutral-400 dark:text-neutral-500">
+        <span className="text-[13px] font-mono text-surface-400 dark:text-surface-500">
           ://
         </span>
-        <span className="text-sm font-semibold tracking-tight text-neutral-700 dark:text-neutral-200">
+        <span className="text-[13px] font-semibold tracking-tight text-surface-800 dark:text-surface-100">
           localhost
         </span>
       </div>
@@ -34,7 +34,7 @@ const Header = memo(function Header() {
         <button
           onClick={() => fetchProcesses()}
           disabled={isScanning}
-          className="p-1.5 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors disabled:opacity-40"
+          className="p-1.5 rounded-md hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-100 disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50"
           title={refreshTitle}
           aria-label="Refresh process list"
         >
@@ -43,8 +43,8 @@ const Header = memo(function Header() {
             spinning={isScanning}
             className={
               isScanning
-                ? "text-neutral-600 dark:text-neutral-300"
-                : "text-neutral-400 dark:text-neutral-500"
+                ? "text-surface-600 dark:text-surface-300"
+                : "text-surface-400 dark:text-surface-500"
             }
           />
         </button>
@@ -52,13 +52,13 @@ const Header = memo(function Header() {
         {/* Settings */}
         <button
           onClick={() => setView("settings")}
-          className="p-1.5 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+          className="p-1.5 rounded-md hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50"
           title="Settings"
           aria-label="Open settings"
         >
           <SettingsIcon
             size={16}
-            className="text-neutral-400 dark:text-neutral-500"
+            className="text-surface-400 dark:text-surface-500"
           />
         </button>
       </div>
