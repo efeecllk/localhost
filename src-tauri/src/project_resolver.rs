@@ -17,6 +17,16 @@ const PROJECT_MARKERS: &[&str] = &[
     "Makefile",
 ];
 
+/// Expand ~ to the user's home directory.
+fn expand_tilde(path: &str) -> String {
+    if path.starts_with("~/") || path == "~" {
+        if let Some(home) = dirs::home_dir() {
+            return path.replacen('~', &home.to_string_lossy(), 1);
+        }
+    }
+    path.to_string()
+}
+
 /// Resolve a cwd to (project_name, project_root_path, relative_path).
 fn resolve_project(cwd: &str, projects_dir: &str) -> (String, String, String) {
     if cwd.is_empty() {
@@ -24,9 +34,10 @@ fn resolve_project(cwd: &str, projects_dir: &str) -> (String, String, String) {
     }
 
     let cwd_path = Path::new(cwd);
+    let expanded_dir = expand_tilde(projects_dir);
 
     // Strategy 1: Check if cwd is under projects_dir
-    if let Ok(relative) = cwd_path.strip_prefix(projects_dir) {
+    if let Ok(relative) = cwd_path.strip_prefix(&expanded_dir) {
         let components: Vec<&str> = relative
             .components()
             .map(|c| c.as_os_str().to_str().unwrap_or(""))
@@ -34,7 +45,7 @@ fn resolve_project(cwd: &str, projects_dir: &str) -> (String, String, String) {
 
         if let Some(project_name) = components.first() {
             if !project_name.is_empty() {
-                let project_root = format!("{}/{}", projects_dir, project_name);
+                let project_root = format!("{}/{}", expanded_dir, project_name);
                 let sub_path = if components.len() > 1 {
                     format!("/{}", components[1..].join("/"))
                 } else {
