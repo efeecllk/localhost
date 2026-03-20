@@ -1,3 +1,6 @@
+// src-tauri/src/commands.rs
+// Tauri command handlers exposed to the frontend via invoke().
+
 use std::sync::Arc;
 use tauri::{AppHandle, State};
 
@@ -20,13 +23,21 @@ pub async fn get_processes(
     scanner.scan(&projects_dir).await.map_err(to_cmd_error)
 }
 
-/// Kill a native process by PID. Sends SIGTERM, not SIGKILL.
+/// Kill a native process by PID.
+/// On Unix, sends SIGTERM. On Windows, uses `taskkill`.
 #[tauri::command]
 pub async fn stop_process(pid: u32) -> Result<(), String> {
     #[cfg(unix)]
     {
         std::process::Command::new("kill")
             .args(["-TERM", &pid.to_string()])
+            .output()
+            .map_err(|e| format!("Failed to stop process {pid}: {e}"))?;
+    }
+    #[cfg(windows)]
+    {
+        std::process::Command::new("taskkill")
+            .args(["/PID", &pid.to_string(), "/F"])
             .output()
             .map_err(|e| format!("Failed to stop process {pid}: {e}"))?;
     }
@@ -40,7 +51,9 @@ pub async fn restart_process(pid: u32) -> Result<(), String> {
     stop_process(pid).await
 }
 
-/// Open a directory in the default terminal (Terminal.app on macOS).
+/// Open a directory in the default terminal.
+/// On macOS, opens Terminal.app. On Windows, opens cmd.exe.
+/// On Linux, attempts to open the default terminal emulator via xdg-open.
 #[tauri::command]
 pub async fn open_in_terminal(path: String) -> Result<(), String> {
     #[cfg(target_os = "macos")]
@@ -49,6 +62,33 @@ pub async fn open_in_terminal(path: String) -> Result<(), String> {
             .args(["-a", "Terminal", &path])
             .spawn()
             .map_err(|e| format!("Failed to open terminal: {e}"))?;
+    }
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("cmd")
+            .args(["/c", "start", "cmd", "/k", &format!("cd /d \"{}\"", path)])
+            .spawn()
+            .map_err(|e| format!("Failed to open terminal: {e}"))?;
+    }
+    #[cfg(target_os = "linux")]
+    {
+        // Try common terminal emulators in order of preference
+        let terminals = ["x-terminal-emulator", "gnome-terminal", "konsole", "xterm"];
+        let mut launched = false;
+        for term in &terminals {
+            if std::process::Command::new(term)
+                .arg("--working-directory")
+                .arg(&path)
+                .spawn()
+                .is_ok()
+            {
+                launched = true;
+                break;
+            }
+        }
+        if !launched {
+            return Err(format!("Failed to open terminal in {path}: no supported terminal found"));
+        }
     }
     Ok(())
 }

@@ -1,3 +1,7 @@
+// src-tauri/src/lib.rs
+// Tauri app setup: tray icon, window management, macOS-specific configuration,
+// and plugin/command registration.
+
 // The `objc` crate's `sel_impl!` macro emits unexpected_cfgs warnings for "cargo-clippy".
 // This cannot be fixed without migrating to objc2. Suppress at crate level.
 #![allow(unexpected_cfgs)]
@@ -163,13 +167,10 @@ pub fn run() {
             commands::save_settings,
         ])
         .on_window_event(|window, event| {
-            match event {
-                // Close button should hide, not quit — keep app running in tray
-                tauri::WindowEvent::CloseRequested { api, .. } => {
-                    api.prevent_close();
-                    let _ = window.hide();
-                }
-                _ => {}
+            // Close button should hide, not quit -- keep app running in tray
+            if let tauri::WindowEvent::CloseRequested { api, .. } = event {
+                api.prevent_close();
+                let _ = window.hide();
             }
         })
         .run(tauri::generate_context!())

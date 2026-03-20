@@ -1,3 +1,7 @@
+// src-tauri/src/scanner/mod.rs
+// Scanner orchestrator: refreshes sysinfo, runs port/dev-tool/docker scanners in sequence,
+// merges results, and delegates project grouping to project_resolver.
+
 use std::collections::HashSet;
 use sysinfo::{ProcessesToUpdate, System};
 use tokio::sync::Mutex;
@@ -74,25 +78,8 @@ impl Scanner {
             }
         }
 
-        // // Debug: log discovered processes and their cwds
-        // for p in &all_processes {
-        //     if p.port.is_some() || p.source == "dev_tool" {
-        //         eprintln!(
-        //             "[localhost:scan] pid={} name={} port={:?} cwd={:?} source={}",
-        //             p.pid, p.name, p.port, p.cwd, p.source
-        //         );
-        //     }
-        // }
-
         // Step 6: Resolve project for each process
         let groups = project_resolver::group_by_project(all_processes, projects_dir);
-
-        // // Debug: log project groups
-        // eprintln!(
-        //     "[localhost:scan] grouped into {} projects: {:?}",
-        //     groups.len(),
-        //     groups.iter().map(|g| &g.name).collect::<Vec<_>>()
-        // );
 
         Ok(groups)
     }

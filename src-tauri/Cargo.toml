@@ -1,7 +1,7 @@
 [package]
 name = "localhost"
 version = "0.1.0"
-description = "macOS menu bar app for monitoring local dev processes"
+description = "Desktop tray app for monitoring local dev processes"
 authors = ["Efe Celik"]
 edition = "2021"
 rust-version = "1.77"
@@ -14,8 +14,9 @@ crate-type = ["lib", "cdylib", "staticlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-# Tauri core — tray-icon feature required for menu bar app
+# Tauri core — tray-icon feature required for tray app
 tauri = { version = "2", features = ["tray-icon", "image-png", "macos-private-api"] }
+# Note: "macos-private-api" is a no-op on non-macOS targets and does not affect compilation.
 
 # Tauri plugins
 tauri-plugin-shell  = "2"

@@ -1,3 +1,6 @@
+// src-tauri/src/scanner/docker.rs
+// Queries the Docker daemon for running containers via the bollard crate.
+
 use bollard::container::ListContainersOptions;
 use bollard::Docker;
 

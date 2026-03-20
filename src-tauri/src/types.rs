@@ -1,3 +1,6 @@
+// src-tauri/src/types.rs
+// Shared data types serialized as JSON between Rust backend and TypeScript frontend.
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

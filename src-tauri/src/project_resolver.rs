@@ -1,3 +1,6 @@
+// src-tauri/src/project_resolver.rs
+// Maps process working directories to project groups under the configured projects directory.
+
 use std::collections::HashMap;
 use std::path::Path;
 

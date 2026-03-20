@@ -1,3 +1,6 @@
+// src-tauri/src/errors.rs
+// Error types for scanner operations.
+
 use thiserror::Error;
 
 #[derive(Error, Debug)]

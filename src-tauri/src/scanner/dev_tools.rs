@@ -1,3 +1,6 @@
+// src-tauri/src/scanner/dev_tools.rs
+// Detects running processes matching known dev tool names (node, python, cargo, etc.).
+
 use std::collections::HashSet;
 
 use sysinfo::System;
@@ -86,7 +89,9 @@ pub fn scan_dev_tools(sys: &System, already_found_pids: &HashSet<u32>, projects_
         }
 
         let name = process.name().to_string_lossy().to_string();
-        if tool_set.contains(name.as_str()) {
+        // On Windows, sysinfo returns names with .exe suffix — strip it for matching
+        let match_name = name.strip_suffix(".exe").unwrap_or(&name);
+        if tool_set.contains(match_name) {
             let cwd = proc_cwd::get_cwd(pid_u32, process);
 
             // Skip processes whose cwd is not under projects_dir

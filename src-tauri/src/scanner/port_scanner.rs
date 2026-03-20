@@ -1,3 +1,6 @@
+// src-tauri/src/scanner/port_scanner.rs
+// Detects processes listening on TCP ports using netstat2 and enriches them with sysinfo data.
+
 use std::collections::{HashMap, HashSet};
 
 use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSocketInfo};
@@ -13,9 +16,12 @@ const IGNORED_PORTS: &[u16] = &[
     53,   // DNS
     80,   // system httpd (not dev)
     443,  // system httpd (not dev)
-    631,  // CUPS printing
+    631,  // CUPS printing (Unix)
     5000, // macOS AirPlay receiver (Monterey+)
+    5040, // Windows RPC
+    5357, // Windows WSDAPI
     7000, // macOS AirPlay
+    7680, // Windows Update Delivery Optimization
 ];
 
 /// System and non-dev processes to ignore.
@@ -85,6 +91,7 @@ const IGNORED_PROCESSES: &[&str] = &[
     "redis-server",
     "nginx",
     "httpd",
+    // macOS system services
     "Notes",
     "FHC",
     "Clip Proxy API",
@@ -96,6 +103,25 @@ const IGNORED_PROCESSES: &[&str] = &[
     "identityservicesd",
     "imagent",
     "apsd",
+    // Windows system services
+    "svchost.exe",
+    "System",
+    "lsass.exe",
+    "services.exe",
+    "wininit.exe",
+    "spoolsv.exe",
+    "SearchIndexer.exe",
+    "SecurityHealthService.exe",
+    "MsMpEng.exe",
+    "WmiPrvSE.exe",
+    "dasHost.exe",
+    "sihost.exe",
+    "explorer.exe",
+    "taskhostw.exe",
+    "RuntimeBroker.exe",
+    "ShellExperienceHost.exe",
+    "StartMenuExperienceHost.exe",
+    "ctfmon.exe",
 ];
 
 /// Expand ~ to the user's home directory.
@@ -153,8 +179,10 @@ pub fn scan_listening_ports(sys: &System, projects_dir: &str) -> Result<Vec<Proc
         if let Some(process) = sys.process(Pid::from_u32(*pid)) {
             let name = process.name().to_string_lossy().to_string();
 
-            // Skip ignored system processes
-            if IGNORED_PROCESSES.iter().any(|&ignored| name == ignored) {
+            // Skip ignored system processes.
+            // On Windows, sysinfo returns names with .exe suffix — match both forms.
+            let match_name = name.strip_suffix(".exe").unwrap_or(&name);
+            if IGNORED_PROCESSES.iter().any(|&ignored| name == ignored || match_name == ignored) {
                 continue;
             }
 
