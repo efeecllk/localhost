@@ -17,12 +17,10 @@ const Header = memo(function Header() {
 
   return (
     <div
-      data-tauri-drag-region
-      className="flex items-center justify-between px-4 py-2.5 border-b border-surface-200 dark:border-surface-700"
+      className="flex items-center justify-between pl-[78px] pr-4 py-2.5 border-b border-surface-200 dark:border-surface-700"
     >
-      {/* App name */}
+      {/* App name — left padding reserves space for native traffic light buttons */}
       <span
-        data-tauri-drag-region
         className="text-[14px] font-semibold tracking-tight text-surface-800 dark:text-surface-100"
       >
         localhost

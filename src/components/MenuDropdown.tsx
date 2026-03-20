@@ -24,7 +24,7 @@ const MenuDropdown = memo(function MenuDropdown() {
   }, [clearError, fetchProcesses]);
 
   return (
-    <div className="flex flex-col h-full max-h-[500px] w-[360px] bg-surface-50 dark:bg-surface-950 overflow-hidden">
+    <div className="flex flex-col h-full w-full bg-surface-50 dark:bg-surface-950 overflow-hidden">
       <Header />
 
       {/* Error banner with dismiss and retry */}

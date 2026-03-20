@@ -21,6 +21,13 @@ body {
   overflow: hidden;
   user-select: none;
   -webkit-user-select: none;
+  /* Native window background — light mode */
+  background: #FAFAF9;
+}
+
+/* Dark mode background applied via the .dark class on <html> */
+html.dark body {
+  background: #0C0A09;
 }
 
 /* Custom scrollbar -- 4px thin macOS-style */
