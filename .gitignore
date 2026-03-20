@@ -1,0 +1,29 @@
+# Node
+node_modules/
+dist/
+.pnpm-store/
+
+# Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+.cursor/
+*.swp
+*.swo
+
+# Build artifacts
+*.dmg
+*.app
+*.exe
+*.msi
