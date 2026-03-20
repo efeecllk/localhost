@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSocketInfo};
 use sysinfo::{Pid, System};
@@ -76,7 +76,37 @@ const IGNORED_PROCESSES: &[&str] = &[
     "Raycast",
     "Bartender",
     "Amphetamine",
+    // System services that listen on ports
+    "postgres",
+    "Postgres",
+    "PostgreSQL",
+    "mysqld",
+    "mongod",
+    "redis-server",
+    "nginx",
+    "httpd",
+    "Notes",
+    "FHC",
+    "Clip Proxy API",
+    "clipProxyAPI",
+    "com.apple.WebKit",
+    "nesessionmanager",
+    "remindd",
+    "cloudd",
+    "identityservicesd",
+    "imagent",
+    "apsd",
 ];
+
+/// Expand ~ to the user's home directory.
+fn expand_projects_dir(path: &str) -> String {
+    if path.starts_with("~/") || path == "~" {
+        if let Some(home) = dirs::home_dir() {
+            return path.replacen('~', &home.to_string_lossy(), 1);
+        }
+    }
+    path.to_string()
+}
 
 /// Compute a simple health status string based on CPU and memory usage.
 fn compute_health(cpu_percent: f32, memory_mb: u64) -> String {
@@ -91,15 +121,18 @@ fn compute_health(cpu_percent: f32, memory_mb: u64) -> String {
 
 /// Build a map of PID -> Vec<port> from netstat2,
 /// then enrich each with sysinfo process data.
-pub fn scan_listening_ports(sys: &System) -> Result<Vec<ProcessInfo>, ScanError> {
+/// Only includes processes whose cwd is under `projects_dir`.
+pub fn scan_listening_ports(sys: &System, projects_dir: &str) -> Result<Vec<ProcessInfo>, ScanError> {
+    let expanded_dir = expand_projects_dir(projects_dir);
     // Step 1: Get all TCP sockets in LISTEN state
     let af_flags = AddressFamilyFlags::IPV4 | AddressFamilyFlags::IPV6;
     let proto_flags = ProtocolFlags::TCP;
     let sockets = get_sockets_info(af_flags, proto_flags)
         .map_err(|e| ScanError::NetstatError(e.to_string()))?;
 
-    // Step 2: Build PID -> ports mapping, filtering to LISTEN only
-    let mut pid_ports: HashMap<u32, Vec<u16>> = HashMap::new();
+    // Step 2: Build PID -> ports mapping, filtering to LISTEN only.
+    // Use a HashSet per PID to deduplicate IPv4/IPv6 listeners on the same port.
+    let mut pid_ports: HashMap<u32, HashSet<u16>> = HashMap::new();
     for socket in &sockets {
         if let ProtocolSocketInfo::Tcp(tcp) = &socket.protocol_socket_info {
             if tcp.state == netstat2::TcpState::Listen {
@@ -108,7 +141,7 @@ pub fn scan_listening_ports(sys: &System) -> Result<Vec<ProcessInfo>, ScanError>
                     continue;
                 }
                 for pid in &socket.associated_pids {
-                    pid_ports.entry(*pid).or_default().push(tcp.local_port);
+                    pid_ports.entry(*pid).or_default().insert(tcp.local_port);
                 }
             }
         }
@@ -126,6 +159,12 @@ pub fn scan_listening_ports(sys: &System) -> Result<Vec<ProcessInfo>, ScanError>
             }
 
             let cwd = proc_cwd::get_cwd(*pid, process);
+
+            // Skip processes whose cwd is not under projects_dir
+            if cwd.is_empty() || !cwd.starts_with(&expanded_dir) {
+                continue;
+            }
+
             let uptime_secs = process.run_time();
             let cpu_percent = process.cpu_usage();
             let memory_mb = process.memory() / (1024 * 1024);

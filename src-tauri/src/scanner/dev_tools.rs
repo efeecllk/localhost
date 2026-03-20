@@ -44,7 +44,6 @@ const DEV_TOOL_NAMES: &[&str] = &[
     "mvn",
     "kotlin",
     // Databases (native, not Docker)
-    "postgres",
     "mysqld",
     "mongod",
     "redis-server",
@@ -61,10 +60,22 @@ const DEV_TOOL_NAMES: &[&str] = &[
     "nx",
 ];
 
+/// Expand ~ to the user's home directory.
+fn expand_projects_dir(path: &str) -> String {
+    if path.starts_with("~/") || path == "~" {
+        if let Some(home) = dirs::home_dir() {
+            return path.replacen('~', &home.to_string_lossy(), 1);
+        }
+    }
+    path.to_string()
+}
+
 /// Scan for running processes whose names match known dev tools,
 /// excluding any PIDs already captured by the port scanner.
-pub fn scan_dev_tools(sys: &System, already_found_pids: &HashSet<u32>) -> Vec<ProcessInfo> {
+/// Only includes processes whose cwd is under `projects_dir`.
+pub fn scan_dev_tools(sys: &System, already_found_pids: &HashSet<u32>, projects_dir: &str) -> Vec<ProcessInfo> {
     let tool_set: HashSet<&str> = DEV_TOOL_NAMES.iter().copied().collect();
+    let expanded_dir = expand_projects_dir(projects_dir);
     let mut results = Vec::new();
 
     for (pid, process) in sys.processes() {
@@ -77,6 +88,11 @@ pub fn scan_dev_tools(sys: &System, already_found_pids: &HashSet<u32>) -> Vec<Pr
         let name = process.name().to_string_lossy().to_string();
         if tool_set.contains(name.as_str()) {
             let cwd = proc_cwd::get_cwd(pid_u32, process);
+
+            // Skip processes whose cwd is not under projects_dir
+            if cwd.is_empty() || !cwd.starts_with(&expanded_dir) {
+                continue;
+            }
 
             results.push(ProcessInfo {
                 pid: pid_u32,

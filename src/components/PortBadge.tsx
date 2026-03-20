@@ -77,8 +77,8 @@ const PortBadge = memo(function PortBadge({
     <span
       className={`
         inline-flex items-center justify-center
-        min-w-[52px] px-2 py-0.5
-        rounded-md text-[11px] font-mono font-medium text-center
+        min-w-[58px] px-2 py-0.5
+        rounded-md text-[12px] font-mono font-semibold text-center
         flex-shrink-0
         ${styles.light} ${styles.dark}
       `}

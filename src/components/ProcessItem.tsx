@@ -1,5 +1,5 @@
 // src/components/ProcessItem.tsx
-// Single process row in the list. Shows status dot, port badge, path, and info button.
+// Single process row. Layout: PORT  process_name  /relative/path  [info]
 
 import { memo, useCallback } from "react";
 import PortBadge from "@/components/PortBadge";
@@ -10,18 +10,6 @@ import type { Process } from "@/types";
 interface ProcessItemProps {
   process: Process;
 }
-
-/**
- * Status dot color mapping.
- * Uses the design system semantic status colors via Tailwind's arbitrary-value
- * syntax so they match exactly the status-* tokens in tailwind.config.js.
- */
-const STATUS_DOT_COLORS: Record<string, string> = {
-  healthy:     "bg-[#7C9A82]",
-  high_cpu:    "bg-[#C9A962]",
-  high_memory: "bg-[#C9A962]",
-  crashed:     "bg-[#B87A7A]",
-};
 
 const ProcessItem = memo(function ProcessItem({ process }: ProcessItemProps) {
   const selectProcess = useProcessStore((s) => s.selectProcess);
@@ -36,23 +24,23 @@ const ProcessItem = memo(function ProcessItem({ process }: ProcessItemProps) {
     [selectProcess, process]
   );
 
-  const statusColor =
-    STATUS_DOT_COLORS[process.status] ?? "bg-surface-400";
-
-  // Determine the display path
-  // Show: relative path if available, otherwise process name (e.g., "node", "python")
-  const displayPath =
+  // Secondary label: process runtime name (node, python, etc.)
+  const processLabel =
     process.source === "docker" && process.dockerInfo
-      ? `docker/${process.dockerInfo.containerName}`
-      : process.relativePath
-        ? `${process.name} ${process.relativePath}`
-        : process.name;
+      ? process.dockerInfo.containerName
+      : process.name;
+
+  // Tertiary label: relative path within the project (/frontend, /backend, etc.)
+  const pathLabel =
+    process.source !== "docker" && process.relativePath
+      ? process.relativePath
+      : null;
 
   return (
     <div
       role="listitem"
       className={[
-        "group flex items-center gap-2 px-4 py-2",
+        "group flex items-center gap-2.5 px-4 py-1.5",
         "hover:bg-surface-100 dark:hover:bg-surface-800",
         "transition-colors duration-100 cursor-default",
         isSelected
@@ -60,27 +48,31 @@ const ProcessItem = memo(function ProcessItem({ process }: ProcessItemProps) {
           : "border-l-2 border-transparent",
       ].join(" ")}
     >
-      {/* Status dot */}
-      <div
-        className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${statusColor}`}
-        aria-label={`Status: ${process.status.replace("_", " ")}`}
-        title={process.status.replace("_", " ")}
-      />
-
-      {/* Port badge */}
+      {/* Port -- primary, most prominent */}
       <PortBadge
         port={process.port}
         source={process.source}
         processName={process.name}
       />
 
-      {/* Relative path or docker container name */}
+      {/* Process name -- secondary */}
       <span
-        className="flex-1 min-w-0 text-[12px] font-mono text-surface-600 dark:text-surface-300 truncate"
-        title={displayPath}
+        className="text-[12px] font-mono text-surface-600 dark:text-surface-300 flex-shrink-0"
+        title={processLabel}
       >
-        {displayPath}
+        {processLabel}
       </span>
+
+      {/* Relative path -- tertiary, subtle, takes remaining space */}
+      {pathLabel && (
+        <span
+          className="flex-1 min-w-0 text-[11px] font-mono text-surface-400 dark:text-surface-500 truncate"
+          title={pathLabel}
+        >
+          {pathLabel}
+        </span>
+      )}
+      {!pathLabel && <span className="flex-1" />}
 
       {/* Detail button -- visible on hover or when selected */}
       <button

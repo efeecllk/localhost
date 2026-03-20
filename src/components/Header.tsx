@@ -17,13 +17,16 @@ const Header = memo(function Header() {
     : "Refresh";
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700">
+    <div
+      data-tauri-drag-region
+      className="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700"
+    >
       {/* Left: identity */}
-      <div className="flex items-center gap-1.5">
-        <span className="text-[13px] font-mono text-surface-400 dark:text-surface-500">
+      <div data-tauri-drag-region className="flex items-center gap-1.5">
+        <span data-tauri-drag-region className="text-[13px] font-mono text-surface-400 dark:text-surface-500">
           ://
         </span>
-        <span className="text-[13px] font-semibold tracking-tight text-surface-800 dark:text-surface-100">
+        <span data-tauri-drag-region className="text-[13px] font-semibold tracking-tight text-surface-800 dark:text-surface-100">
           localhost
         </span>
       </div>

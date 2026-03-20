@@ -76,25 +76,6 @@ export const useProcessStore = create<ProcessState>()(
             get().settings.projectsDir
           );
 
-          // Debug: log what the backend returned
-          {
-            const totalProcs = projects.reduce((s, g) => s + g.processes.length, 0);
-            console.log(
-              `[processStore] fetched ${projects.length} groups, ${totalProcs} processes`,
-              projects.map((g) => ({
-                name: g.name,
-                path: g.path,
-                processCount: g.processes.length,
-                processes: g.processes.map((p) => ({
-                  pid: p.pid,
-                  name: p.name,
-                  port: p.port,
-                  relativePath: p.relativePath,
-                })),
-              }))
-            );
-          }
-
           const prevSelected = get().selectedProcess;
 
           // If a process was selected, try to keep it selected by PID match

@@ -3,12 +3,20 @@
 
 import { memo, useCallback } from "react";
 import ProcessItem from "@/components/ProcessItem";
-import { ChevronIcon } from "@/components/icons";
+import { ChevronIcon, FolderIcon } from "@/components/icons";
 import { useProcessStore } from "@/stores/processStore";
 import type { ProjectGroup } from "@/types";
 
 interface ProjectGroupProps {
   group: ProjectGroup;
+}
+
+/** Convert a raw project name to Title Case for display. */
+function toTitleCase(name: string): string {
+  return name
+    .split(/[\s_-]+/)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 }
 
 const ProjectGroupComponent = memo(function ProjectGroupComponent({
@@ -27,34 +35,43 @@ const ProjectGroupComponent = memo(function ProjectGroupComponent({
     <div
       role="group"
       aria-label={`${group.name} project`}
-      className="border-b border-surface-200/50 dark:border-surface-700/50 last:border-b-0"
+      className="mt-2 first:mt-0"
     >
+      {/* Separator above each group except the first */}
+      <div className="mx-4 mb-1 border-t border-surface-200 dark:border-surface-700/70 first:hidden" />
+
       {/* Project name header -- clickable to collapse */}
       <button
         onClick={handleToggle}
-        className="w-full flex items-center gap-1.5 px-4 py-1.5 text-[11px] font-semibold text-surface-500 dark:text-surface-400 uppercase tracking-wider hover:bg-surface-100 dark:hover:bg-surface-800/50 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-surface-400/50"
+        className="w-full flex items-center gap-2 px-4 py-2 hover:bg-surface-100 dark:hover:bg-surface-800/50 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-surface-400/50"
         aria-expanded={!collapsed}
         aria-controls={`group-${group.name}`}
       >
+        <FolderIcon
+          size={13}
+          className="flex-shrink-0 text-surface-400 dark:text-surface-500"
+        />
+        <span className="flex-1 truncate text-[13px] font-semibold text-surface-800 dark:text-surface-100 tracking-tight text-left">
+          {toTitleCase(group.name)}
+          <span className="ml-1.5 text-[12px] font-normal text-surface-400 dark:text-surface-500">
+            ({group.processes.length})
+          </span>
+        </span>
         <ChevronIcon
-          size={10}
+          size={11}
           className={`flex-shrink-0 text-surface-400 dark:text-surface-500 transition-transform duration-150 ${
             collapsed ? "-rotate-90" : "rotate-0"
           }`}
         />
-        <span className="truncate">{group.name}</span>
-        <span className="ml-auto flex-shrink-0 bg-surface-200 dark:bg-surface-700 text-surface-500 dark:text-surface-400 text-[10px] font-medium px-1.5 py-0.5 rounded-full tabular-nums">
-          {group.processes.length}
-        </span>
       </button>
 
-      {/* Process list -- animated collapse */}
+      {/* Process list */}
       {!collapsed && (
         <div
           id={`group-${group.name}`}
           role="list"
           aria-label={`Processes in ${group.name}`}
-          className="space-y-px"
+          className="pb-1"
         >
           {group.processes.map((process) => (
             <ProcessItem key={process.pid} process={process} />
