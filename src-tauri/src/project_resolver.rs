@@ -100,10 +100,20 @@ fn resolve_project(cwd: &str, projects_dir: &str) -> (String, String, String) {
 }
 
 /// Group a flat list of ProcessInfo into ProjectGroups.
+/// Only includes processes whose cwd is under projects_dir or Docker containers.
 pub fn group_by_project(processes: Vec<ProcessInfo>, projects_dir: &str) -> Vec<ProjectGroup> {
     let mut groups: HashMap<String, ProjectGroup> = HashMap::new();
+    let expanded_dir = expand_tilde(projects_dir);
 
     for mut process in processes {
+        // Skip processes not under projects_dir (unless Docker)
+        if process.source != "docker"
+            && !process.cwd.is_empty()
+            && !process.cwd.starts_with(&expanded_dir)
+        {
+            continue;
+        }
+
         let (project_name, project_path, relative_path) =
             resolve_project(&process.cwd, projects_dir);
 
