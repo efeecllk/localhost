@@ -30,10 +30,22 @@ const ActionButtons = memo(function ActionButtons({
 
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  const handleCopy = useCallback((value: string, field: string) => {
-    navigator.clipboard.writeText(value);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
+  const handleCopy = useCallback(async (value: string, field: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch {
+      // Fallback: try Tauri clipboard if browser API fails
+      try {
+        const { writeText } = await import("@tauri-apps/plugin-clipboard-manager");
+        await writeText(value);
+        setCopiedField(field);
+        setTimeout(() => setCopiedField(null), 2000);
+      } catch {
+        console.error("Clipboard write failed");
+      }
+    }
   }, []);
 
   const isDocker = process.source === "docker";

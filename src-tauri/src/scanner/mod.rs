@@ -34,8 +34,8 @@ impl Scanner {
             let mut sys = self.sys.lock().await;
             sys.refresh_processes(ProcessesToUpdate::All, true);
 
-            // Step 2: Run port scanner
-            let port_results = port_scanner::scan_listening_ports(&sys)?;
+            // Step 2: Run port scanner (graceful — partial results better than none)
+            let port_results = port_scanner::scan_listening_ports(&sys).unwrap_or_default();
 
             // Step 3: Run dev tool scanner, excluding PIDs already found
             let found_pids: HashSet<u32> = port_results.iter().map(|p| p.pid).collect();
@@ -46,7 +46,7 @@ impl Scanner {
         // Mutex released here -- docker scanning does not need sysinfo
 
         // Step 4: Run Docker scanner (async, independent)
-        let docker_results = docker::scan_docker_containers().await?;
+        let docker_results = docker::scan_docker_containers().await.unwrap_or_default();
 
         // Step 5: Merge all results
         let mut all_processes = Vec::new();
