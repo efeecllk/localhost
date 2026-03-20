@@ -49,9 +49,7 @@
       "icons/shared/128x128@2x.png",
       "icons/shared/256x256.png",
       "icons/shared/512x512.png",
-      "icons/shared/icon.png",
-      "icons/macos/icon.icns",
-      "icons/windows/icon.ico"
+      "icons/shared/icon.png"
     ],
     "macOS": {
       "minimumSystemVersion": "13.0",

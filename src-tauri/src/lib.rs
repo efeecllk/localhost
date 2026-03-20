@@ -2,7 +2,7 @@ use std::sync::Arc;
 use tauri::{
     menu::{Menu, MenuItem},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    AppHandle, Manager, PhysicalPosition,
+    AppHandle, Emitter, Manager, PhysicalPosition,
 };
 
 mod commands;
