@@ -7,14 +7,13 @@ on:
 jobs:
   update-tap:
     runs-on: ubuntu-latest
+    if: contains(toJSON(github.event.release.assets.*.name), '.dmg')
+
     steps:
-      - name: Trigger tap update
-        env:
-          TAP_TOKEN: ${{ secrets.TAP_GITHUB_TOKEN }}
-          TAG_NAME: ${{ github.ref_name }}
-        run: |
-          curl -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $TAP_TOKEN" \
-            https://api.github.com/repos/efeecllk/homebrew-localhost/dispatches \
-            -d "{\"event_type\":\"new-release\",\"client_payload\":{\"tag\":\"$TAG_NAME\"}}"
+      - name: Dispatch to homebrew-localhost
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          repository: efeecllk/homebrew-localhost
+          event-type: update-tap
+          client-payload: '{"tag": "${{ github.event.release.tag_name }}"}'
