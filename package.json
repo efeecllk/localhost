@@ -1,6 +1,6 @@
 {
   "name": "localhost",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "macOS menu bar app that shows all running dev processes grouped by project",
   "type": "module",
   "scripts": {
