@@ -18,6 +18,7 @@ Thumbs.db
 
 # Editor
 .vscode/settings.json
+.idea/
 .cursor/
 *.swp
 *.swo
