@@ -1,8 +1,8 @@
 // src/components/Settings.tsx
 // Settings panel with projects dir, scan interval, editor, and theme fields.
 
-import { memo, useState, useEffect } from "react";
-import { ChevronLeftIcon } from "@/components/icons";
+import { memo, useState, useEffect, useCallback } from "react";
+import { ChevronLeftIcon, FolderIcon } from "@/components/icons";
 import { useProcessStore } from "@/stores/processStore";
 import type { Settings as SettingsType } from "@/types";
 
@@ -22,6 +22,25 @@ const Settings = memo(function Settings() {
   const handleSave = () => {
     updateSettings(local);
   };
+
+  const handlePickFolder = useCallback(async () => {
+    try {
+      const { open } = await import("@tauri-apps/plugin-dialog");
+      const selected = await open({
+        directory: true,
+        multiple: false,
+        title: "Select Projects Directory",
+        defaultPath: local.projectsDir || undefined,
+      });
+      if (selected && typeof selected === "string") {
+        const updated = { ...local, projectsDir: selected };
+        setLocal(updated);
+        updateSettings(updated);
+      }
+    } catch (err) {
+      console.error("Folder picker failed:", err);
+    }
+  }, [local, updateSettings]);
 
   const intervalOptions = [
     { value: 2000,  label: "2s" },
@@ -78,16 +97,18 @@ const Settings = memo(function Settings() {
           label="Projects Directory"
           description="Root folder to scan for dev projects"
         >
-          <input
-            type="text"
-            value={local.projectsDir}
-            onChange={(e) =>
-              setLocal({ ...local, projectsDir: e.target.value })
-            }
-            onBlur={handleSave}
-            placeholder="~/Desktop/Projects"
-            className="w-full px-3 py-2.5 text-[12px] font-mono bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg text-surface-800 dark:text-surface-200 placeholder:text-surface-300 dark:placeholder:text-surface-600 focus:outline-none focus:ring-2 focus:ring-surface-400/50 transition-shadow"
-          />
+          <button
+            onClick={handlePickFolder}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50 text-left"
+          >
+            <FolderIcon size={14} className="flex-shrink-0 text-surface-400 dark:text-surface-500" />
+            <span className="flex-1 min-w-0 text-[12px] font-mono text-surface-700 dark:text-surface-300 truncate">
+              {local.projectsDir || "Select folder..."}
+            </span>
+            <span className="flex-shrink-0 text-[11px] text-surface-400 dark:text-surface-500">
+              Change
+            </span>
+          </button>
         </SettingsField>
 
         {/* Scan Interval */}
