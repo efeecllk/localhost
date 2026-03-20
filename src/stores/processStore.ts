@@ -75,6 +75,26 @@ export const useProcessStore = create<ProcessState>()(
           const projects = await tauri.getProcesses(
             get().settings.projectsDir
           );
+
+          // Debug: log what the backend returned
+          {
+            const totalProcs = projects.reduce((s, g) => s + g.processes.length, 0);
+            console.log(
+              `[processStore] fetched ${projects.length} groups, ${totalProcs} processes`,
+              projects.map((g) => ({
+                name: g.name,
+                path: g.path,
+                processCount: g.processes.length,
+                processes: g.processes.map((p) => ({
+                  pid: p.pid,
+                  name: p.name,
+                  port: p.port,
+                  relativePath: p.relativePath,
+                })),
+              }))
+            );
+          }
+
           const prevSelected = get().selectedProcess;
 
           // If a process was selected, try to keep it selected by PID match
@@ -230,16 +250,18 @@ export const useProcessStore = create<ProcessState>()(
         settings: state.settings,
         collapsedProjects: Array.from(state.collapsedProjects),
       }),
-      // Custom serialization for Set<string>
-      merge: (persisted, current) => ({
-        ...current,
-        ...(persisted as object),
-        collapsedProjects: new Set(
-          (persisted as Record<string, unknown>)?.collapsedProjects as
-            | string[]
-            | undefined ?? []
-        ),
-      }),
+      // Custom merge: only restore the keys we explicitly persist (settings + collapsedProjects).
+      // Spreading the entire persisted object would overwrite runtime state like `projects`.
+      merge: (persisted, current) => {
+        const p = persisted as Record<string, unknown> | null;
+        return {
+          ...current,
+          settings: (p?.settings as Settings) ?? current.settings,
+          collapsedProjects: new Set(
+            (p?.collapsedProjects as string[] | undefined) ?? []
+          ),
+        };
+      },
     }
   )
 );

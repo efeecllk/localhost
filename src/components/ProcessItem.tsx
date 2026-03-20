@@ -40,12 +40,13 @@ const ProcessItem = memo(function ProcessItem({ process }: ProcessItemProps) {
     STATUS_DOT_COLORS[process.status] ?? "bg-surface-400";
 
   // Determine the display path
+  // Show: relative path if available, otherwise process name (e.g., "node", "python")
   const displayPath =
     process.source === "docker" && process.dockerInfo
       ? `docker/${process.dockerInfo.containerName}`
       : process.relativePath
-        ? process.relativePath
-        : "/";
+        ? `${process.name} ${process.relativePath}`
+        : process.name;
 
   return (
     <div
