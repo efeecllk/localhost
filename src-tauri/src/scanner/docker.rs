@@ -48,7 +48,6 @@ pub async fn scan_docker_containers() -> Result<Vec<ProcessInfo>, ScanError> {
             .unwrap_or_default()
             .iter()
             .filter_map(|p| p.public_port)
-            .map(|p| p as u16)
             .collect();
 
         // Resolve project working directory from Docker Compose labels

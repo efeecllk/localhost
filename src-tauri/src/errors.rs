@@ -1,6 +1,7 @@
 use thiserror::Error;
 
 #[derive(Error, Debug)]
+#[allow(clippy::enum_variant_names)]
 pub enum ScanError {
     #[error("Failed to scan network ports: {0}")]
     NetstatError(String),

@@ -135,7 +135,7 @@ pub fn run() {
                                 let width = 360.0;
                                 let x = (position.x - width / 2.0).max(0.0);
                                 let y = position.y + 5.0;
-                                show_window_at_position(&app, &window, x, y);
+                                show_window_at_position(app, &window, x, y);
                             }
                         }
                     }
