@@ -1,0 +1,79 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "localhost",
+  "version": "0.1.0",
+  "identifier": "com.efecelik.localhost",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "localhost",
+        "label": "main",
+        "width": 360,
+        "height": 500,
+        "minWidth": 360,
+        "maxWidth": 360,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "visible": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "shadow": false,
+        "center": false
+      }
+    ],
+    "trayIcon": {
+      "id": "main-tray",
+      "iconPath": "icons/tray-icon.png",
+      "iconAsTemplate": true,
+      "tooltip": "localhost — dev process monitor"
+    },
+    "security": {
+      "csp": null
+    },
+    "macOSPrivateApi": true
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/shared/32x32.png",
+      "icons/shared/128x128.png",
+      "icons/shared/128x128@2x.png",
+      "icons/shared/256x256.png",
+      "icons/shared/512x512.png",
+      "icons/shared/icon.png",
+      "icons/macos/icon.icns",
+      "icons/windows/icon.ico"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "13.0",
+      "entitlements": "./entitlements.plist",
+      "infoPlist": "./Info.plist",
+      "signingIdentity": null,
+      "dmg": {
+        "appPosition": { "x": 180, "y": 170 },
+        "applicationFolderPosition": { "x": 480, "y": 170 }
+      }
+    },
+    "windows": {
+      "webviewInstallMode": {
+        "type": "embedBootstrapper"
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "installerIcon": "./icons/windows/icon.ico",
+        "displayLanguageSelector": false,
+        "startMenuFolder": "localhost",
+        "minimumWebview2Version": "110.0.1531.0"
+      }
+    }
+  }
+}

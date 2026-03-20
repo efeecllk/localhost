@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schemas.tauri.app/capabilities/schema.json",
+  "identifier": "default",
+  "description": "Default capabilities for localhost app",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-size",
+    "core:window:allow-set-position",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-is-visible",
+    "core:window:allow-set-focus",
+    "core:window:allow-close",
+    "core:clipboard:allow-write-text",
+    "shell:allow-open",
+    "store:default"
+  ]
+}

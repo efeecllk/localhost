@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- App display name in About dialog -->
+    <key>CFBundleName</key>
+    <string>localhost</string>
+
+    <!-- Hides the app from the Dock — LSUIElement is the standard macOS -->
+    <!-- way to declare a "background" / menu bar-only app -->
+    <key>LSUIElement</key>
+    <true/>
+
+    <!-- Prevents the app from appearing in the App Switcher (Cmd+Tab) -->
+    <key>LSBackgroundOnly</key>
+    <false/>
+
+    <!-- macOS uses this to show the usage reason if the user ever opens -->
+    <!-- System Preferences > Security. Required when using apple-events. -->
+    <key>NSAppleEventsUsageDescription</key>
+    <string>localhost uses Apple Events to open Terminal and editors at project paths.</string>
+
+    <!-- Required for macOS 14+ to read /proc-equivalent info -->
+    <!-- via sysinfo without triggering TCC prompts -->
+    <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <false/>
+</dict>
+</plist>
