@@ -4,6 +4,7 @@ use netstat2::{get_sockets_info, AddressFamilyFlags, ProtocolFlags, ProtocolSock
 use sysinfo::{Pid, System};
 
 use crate::errors::ScanError;
+use crate::proc_cwd;
 use crate::types::ProcessInfo;
 
 /// System ports to ignore (not dev servers).
@@ -124,10 +125,7 @@ pub fn scan_listening_ports(sys: &System) -> Result<Vec<ProcessInfo>, ScanError>
                 continue;
             }
 
-            let cwd = process
-                .cwd()
-                .map(|p| p.to_string_lossy().to_string())
-                .unwrap_or_default();
+            let cwd = proc_cwd::get_cwd(*pid, process);
             let uptime_secs = process.run_time();
             let cpu_percent = process.cpu_usage();
             let memory_mb = process.memory() / (1024 * 1024);

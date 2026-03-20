@@ -54,8 +54,24 @@ impl Scanner {
         all_processes.extend(dev_results);
         all_processes.extend(docker_results);
 
+        // Debug: log discovered processes and their cwds
+        for p in &all_processes {
+            if p.port.is_some() || p.source == "dev_tool" {
+                eprintln!(
+                    "[localhost:scan] pid={} name={} port={:?} cwd={:?} source={}",
+                    p.pid, p.name, p.port, p.cwd, p.source
+                );
+            }
+        }
+
         // Step 6: Resolve project for each process
         let groups = project_resolver::group_by_project(all_processes, projects_dir);
+
+        eprintln!(
+            "[localhost:scan] grouped into {} projects: {:?}",
+            groups.len(),
+            groups.iter().map(|g| &g.name).collect::<Vec<_>>()
+        );
 
         Ok(groups)
     }

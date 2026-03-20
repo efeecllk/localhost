@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use sysinfo::System;
 
+use crate::proc_cwd;
 use crate::types::ProcessInfo;
 
 /// Known dev tool process names grouped by ecosystem.
@@ -75,10 +76,7 @@ pub fn scan_dev_tools(sys: &System, already_found_pids: &HashSet<u32>) -> Vec<Pr
 
         let name = process.name().to_string_lossy().to_string();
         if tool_set.contains(name.as_str()) {
-            let cwd = process
-                .cwd()
-                .map(|p| p.to_string_lossy().to_string())
-                .unwrap_or_default();
+            let cwd = proc_cwd::get_cwd(pid_u32, process);
 
             results.push(ProcessInfo {
                 pid: pid_u32,

@@ -11,6 +11,7 @@ use tauri::{
 
 mod commands;
 mod errors;
+mod proc_cwd;
 mod project_resolver;
 mod scanner;
 mod types;
@@ -162,10 +163,6 @@ pub fn run() {
         ])
         .on_window_event(|window, event| {
             match event {
-                // Hide window on focus lost (click-outside-to-dismiss behavior)
-                tauri::WindowEvent::Focused(false) => {
-                    let _ = window.hide();
-                }
                 // Close button should hide, not quit — keep app running in tray
                 tauri::WindowEvent::CloseRequested { api, .. } => {
                     api.prevent_close();
