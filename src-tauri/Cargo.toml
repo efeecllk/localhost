@@ -1,6 +1,6 @@
 [package]
 name = "localhost"
-version = "0.1.0"
+version = "0.1.1"
 description = "Desktop tray app for monitoring local dev processes"
 authors = ["Efe Celik"]
 edition = "2021"
