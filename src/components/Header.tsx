@@ -1,5 +1,5 @@
 // src/components/Header.tsx
-// Title bar with refresh and settings buttons.
+// Minimal title bar: app name + refresh button.
 
 import { memo } from "react";
 import { RefreshIcon, SettingsIcon } from "@/components/icons";
@@ -11,7 +11,6 @@ const Header = memo(function Header() {
   const isScanning = useProcessStore((s) => s.isScanning);
   const lastUpdated = useProcessStore((s) => s.lastUpdated);
 
-  // Format tooltip for refresh button
   const refreshTitle = lastUpdated
     ? `Last updated: ${new Date(lastUpdated).toLocaleTimeString()}`
     : "Refresh";
@@ -19,21 +18,18 @@ const Header = memo(function Header() {
   return (
     <div
       data-tauri-drag-region
-      className="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700"
+      className="flex items-center justify-between px-4 py-2.5 border-b border-surface-200 dark:border-surface-700"
     >
-      {/* Left: identity */}
-      <div data-tauri-drag-region className="flex items-center gap-1.5">
-        <span data-tauri-drag-region className="text-[13px] font-mono text-surface-400 dark:text-surface-500">
-          ://
-        </span>
-        <span data-tauri-drag-region className="text-[13px] font-semibold tracking-tight text-surface-800 dark:text-surface-100">
-          localhost
-        </span>
-      </div>
+      {/* App name */}
+      <span
+        data-tauri-drag-region
+        className="text-[14px] font-semibold tracking-tight text-surface-800 dark:text-surface-100"
+      >
+        localhost
+      </span>
 
-      {/* Right: action buttons */}
+      {/* Action buttons */}
       <div className="flex items-center gap-1">
-        {/* Manual refresh */}
         <button
           onClick={() => fetchProcesses()}
           disabled={isScanning}
@@ -42,7 +38,7 @@ const Header = memo(function Header() {
           aria-label="Refresh process list"
         >
           <RefreshIcon
-            size={16}
+            size={15}
             spinning={isScanning}
             className={
               isScanning
@@ -52,7 +48,6 @@ const Header = memo(function Header() {
           />
         </button>
 
-        {/* Settings */}
         <button
           onClick={() => setView("settings")}
           className="p-1.5 rounded-md hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-surface-400/50"
@@ -60,7 +55,7 @@ const Header = memo(function Header() {
           aria-label="Open settings"
         >
           <SettingsIcon
-            size={16}
+            size={15}
             className="text-surface-400 dark:text-surface-500"
           />
         </button>
