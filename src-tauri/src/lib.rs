@@ -1,3 +1,7 @@
+// The `objc` crate's `sel_impl!` macro emits unexpected_cfgs warnings for "cargo-clippy".
+// This cannot be fixed without migrating to objc2. Suppress at crate level.
+#![allow(unexpected_cfgs)]
+
 use std::sync::Arc;
 use tauri::{
     menu::{Menu, MenuItem},
@@ -14,8 +18,10 @@ mod types;
 use scanner::Scanner;
 
 #[cfg(target_os = "macos")]
+#[allow(deprecated)]
 use cocoa::appkit::{NSApp, NSApplication};
 #[cfg(target_os = "macos")]
+#[allow(deprecated)]
 use cocoa::base::YES;
 #[cfg(target_os = "macos")]
 use objc::{msg_send, runtime::Object, sel, sel_impl};
@@ -60,6 +66,7 @@ fn show_window_at_position(
 
     #[cfg(target_os = "macos")]
     {
+        #[allow(deprecated)]
         unsafe {
             let ns_app = NSApp();
             ns_app.activateIgnoringOtherApps_(YES);
@@ -90,7 +97,7 @@ pub fn run() {
 
             let mut tray_builder = TrayIconBuilder::new()
                 .icon(tray_icon)
-                .tooltip("localhost");
+                .tooltip("localhost — dev process monitor");
 
             #[cfg(target_os = "macos")]
             {
@@ -154,9 +161,17 @@ pub fn run() {
             commands::save_settings,
         ])
         .on_window_event(|window, event| {
-            // Hide window on focus lost (click-outside-to-dismiss behavior)
-            if let tauri::WindowEvent::Focused(false) = event {
-                let _ = window.hide();
+            match event {
+                // Hide window on focus lost (click-outside-to-dismiss behavior)
+                tauri::WindowEvent::Focused(false) => {
+                    let _ = window.hide();
+                }
+                // Close button should hide, not quit — keep app running in tray
+                tauri::WindowEvent::CloseRequested { api, .. } => {
+                    api.prevent_close();
+                    let _ = window.hide();
+                }
+                _ => {}
             }
         })
         .run(tauri::generate_context!())

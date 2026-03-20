@@ -9,6 +9,7 @@ pub enum ScanError {
     DockerError(String),
 
     #[error("Process error: {0}")]
+    #[allow(dead_code)]
     ProcessError(String),
 
     #[error("IO error: {0}")]
