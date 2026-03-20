@@ -48,7 +48,7 @@ const DEFAULT_SETTINGS: Settings = {
   scanInterval: 5000,
   projectsDir: "~/Desktop/Projects",
   theme: "system",
-  editorCommand: "code",
+  editorCommand: "cursor",
 };
 
 export const useProcessStore = create<ProcessState>()(

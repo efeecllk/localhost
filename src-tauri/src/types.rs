@@ -6,8 +6,10 @@ pub struct ProcessInfo {
     pub pid: u32,
     pub name: String,
     pub port: Option<u16>,
+    #[serde(rename = "fullPath")]
     pub cwd: String,
     pub relative_path: String,
+    #[serde(rename = "uptime")]
     pub uptime_secs: u64,
     pub cpu_percent: f32,
     pub memory_mb: u64,
